@@ -1,4 +1,5 @@
 /build/
+/nbproject/
 *.swp
 *.tmp
 *.o
