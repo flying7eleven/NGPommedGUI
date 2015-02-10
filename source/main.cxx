@@ -2,6 +2,7 @@
 #include <stdlib.h> // exit
 #include <unistd.h>
 #include <sched.h> // fork, _exit
+#include <syslog.h>
 
 int main( int argc, char **argv ) {
 	// fork the process
@@ -16,6 +17,9 @@ int main( int argc, char **argv ) {
 	else if( processId > 0 ) {
 		exit( EXIT_SUCCESS );
 	}
+
+	// from now on we are a daemon process
+	syslog( LOG_DEBUG, "Next Generation pommed GUI daemon started" );
 
 	// everything went okay
 	return EXIT_SUCCESS;
