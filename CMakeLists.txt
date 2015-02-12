@@ -17,3 +17,4 @@ set( NGPOMMEDGUI_SOURCE_FILES ${NGPOMMEDGUI_SOURCE_FILES} source/main.cxx )
 
 #
 add_executable( ngpommedgui ${NGPOMMEDGUI_SOURCE_FILES} ${NGPOMMEDGUI_HEADER_FILES} )
+install( TARGETS ngpommedgui RUNTIME DESTINATION bin )
