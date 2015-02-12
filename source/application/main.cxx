@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sched.h> // fork, _exit
 #include <syslog.h>
+#include "ngpommedgui.hxx"
 
 int main( int argc, char **argv ) {
 	// fork the process
