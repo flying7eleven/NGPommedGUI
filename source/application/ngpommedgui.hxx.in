@@ -1,0 +1,7 @@
+#if !defined( __NGPOMMEDGUI_HXX__ )
+	#define __NGPOMMEDGUI_HXX__
+
+// the (default) location of the PID file of the daemon application
+	#define NGPOMMEDGUI_PID_FILE "@NGPOMMEDGUI_PID_FILE@"
+
+#endif /* if !defined( __NGPOMMEDGUI_HXX__ ) */
