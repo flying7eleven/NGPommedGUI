@@ -9,8 +9,7 @@ before_install:
   - sudo apt-get update
 
 install:
-  - sudo apt-get install libboost1.55-dev
-  - echo `pkg-config --cflags --libs libsystemd-journal`
+  - sudo apt-get install libboost1.55-dev libboost-system1.55-dev libboost-program-options1.55-dev
 
 script:
   - mkdir build
