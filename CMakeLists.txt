@@ -43,3 +43,6 @@ set( NPGOMMEDGUI_HEADER_FILE ${NPGOMMEDGUI_HEADER_FILE} ${CMAKE_BINARY_DIR}/ngpo
 add_executable( ngpommedgui ${NGPOMMEDGUI_SOURCE_FILES} ${NGPOMMEDGUI_HEADER_FILES} ${NPGOMMEDGUI_HEADER_FILE} )
 target_link_libraries( ngpommedgui ${Boost_LIBRARIES} ${SYSTEMD_JOURNAL_LIBRARIES} )
 install( TARGETS ngpommedgui RUNTIME DESTINATION bin )
+
+# some final messages
+message( "-- The daemons PID file will be written to ${NGPOMMEDGUI_PID_FILE}" )
