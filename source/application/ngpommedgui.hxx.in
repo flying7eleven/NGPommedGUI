@@ -4,4 +4,7 @@
 // the (default) location of the PID file of the daemon application
 	#define NGPOMMEDGUI_PID_FILE "@NGPOMMEDGUI_PID_FILE@"
 
+// if defined it indicates that systemds journal was found and can be used for logging
+	#cmakedefine SYSTEMD_JOURNAL_FOUND
+
 #endif /* if !defined( __NGPOMMEDGUI_HXX__ ) */

@@ -9,10 +9,18 @@
 #include <boost/format.hpp>
 #include "ngpommedgui.hxx"
 
+// decide which logging system should be used
+#if defined( SYSTEMD_JOURNAL_FOUND )
+	#undef SD_JOURNAL_SUPPRESS_LOCATION // be sure that the code location is written to the log
+	#include <systemd/sd-journal.h>
+#else
+	#define sd_journal_print( priority, ... ) syslog( priority, __VA_ARGS__ );
+#endif
+
 void daemonSignalHandler( int sig ) {
 	switch( sig ) {
 		case SIGTERM:
-			syslog( LOG_DEBUG | LOG_DAEMON, "Caught SIGTERM. Exiting the daemon gracefully." );
+			sd_journal_print( LOG_DEBUG, "Caught SIGTERM. Exiting the daemon gracefully." );
 			_exit( EXIT_SUCCESS );
 			break;
 	}
@@ -23,7 +31,7 @@ bool isRunning() {
 	int lockFileFileHandle = open( NGPOMMEDGUI_PID_FILE, O_RDWR | O_CREAT | O_TRUNC, 0640 );
 
 	if( lockFileFileHandle < 0 ) {
-		syslog( LOG_ERR | LOG_DAEMON, boost::str( boost::format( "Failed to open %1%. Please delete the file and try again." ) % NGPOMMEDGUI_PID_FILE ).c_str() );
+		sd_journal_print( LOG_ERR, boost::str( boost::format( "Failed to open %1%. Please delete the file and try again." ) % NGPOMMEDGUI_PID_FILE ).c_str() );
 		return true;
 	}
 
@@ -34,7 +42,7 @@ bool isRunning() {
 
 	// if we could lock the file, we can write our pid into the file and then tell the caller that we were not running before
 	const std::string pidStr = boost::str( boost::format( "%1%" ) % getpid() );
-	syslog( LOG_DEBUG | LOG_DAEMON, pidStr.c_str() );
+	sd_journal_print( LOG_DEBUG, pidStr.c_str() );
 	write( lockFileFileHandle, pidStr.c_str(), pidStr.length() );
 	return false;
 }
@@ -76,12 +84,12 @@ int main( int argc, char **argv ) {
 
 	// be sure that we just start the daemon if it is not running already
 	if( isRunning() ) {
-		syslog( LOG_ERR | LOG_DAEMON, boost::str( boost::format( "Terminating. It seems that the daemon is already running. If not, delete %1% and try it again." ) % NGPOMMEDGUI_PID_FILE ).c_str() );
+		sd_journal_print( LOG_ERR, boost::str( boost::format( "Terminating. It seems that the daemon is already running. If not, delete %1% and try it again." ) % NGPOMMEDGUI_PID_FILE ).c_str() );
 		_exit( EXIT_FAILURE + 1 );
 	}
 
 	// from now on we are a daemon process
-	syslog( LOG_DEBUG | LOG_DAEMON, "Next Generation pommed GUI daemon started" );
+	sd_journal_print( LOG_DEBUG, "Next Generation pommed GUI daemon started" );
 
 	// everything went okay
 	return EXIT_SUCCESS;
