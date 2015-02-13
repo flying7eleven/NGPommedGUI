@@ -17,6 +17,10 @@ configure_file( source/application/ngpommedgui.hxx.in ${CMAKE_BINARY_DIR}/ngpomm
 include_directories( SYSTEM ${CMAKE_BINARY_DIR} )
 include_directories( SYSTEM source/application )
 
+# find some required boost libraries
+find_package( Boost 1.55.0 REQUIRED COMPONENTS system )
+include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
+
 # set some specific compiler flags we need
 set( CMAKE_CXX_FLAGS "-Wall -std=c++11" CACHE STRING "Flags used by the compiler during all build types." FORCE )
 
@@ -28,4 +32,5 @@ set( NPGOMMEDGUI_HEADER_FILE ${NPGOMMEDGUI_HEADER_FILE} ${CMAKE_BINARY_DIR}/ngpo
 
 # build the main executable
 add_executable( ngpommedgui ${NGPOMMEDGUI_SOURCE_FILES} ${NGPOMMEDGUI_HEADER_FILES} ${NPGOMMEDGUI_HEADER_FILE} )
+target_link_libraries( ngpommedgui ${Boost_LIBRARIES} )
 install( TARGETS ngpommedgui RUNTIME DESTINATION bin )
