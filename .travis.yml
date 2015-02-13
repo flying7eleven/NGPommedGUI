@@ -14,7 +14,7 @@ install:
 script:
   - mkdir build
   - cd build
-  - cmake -DCMAKE_INSTALL_PREFIX=../.install -DCMAKE_BUILD_TYPE=Debug -DNGPOMMEDGUI_PID_FILE=$HOME/ngpommedgui.pid $OPTIONS ..
+  - cmake -DBUILD_TESTS:BOOL=ON -DCMAKE_INSTALL_PREFIX=../.install -DCMAKE_BUILD_TYPE=Debug -DNGPOMMEDGUI_PID_FILE=$HOME/ngpommedgui.pid $OPTIONS ..
   - cmake --build . --target install
   - cmake --build . --target test
 
