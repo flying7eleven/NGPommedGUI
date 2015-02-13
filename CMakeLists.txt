@@ -22,7 +22,7 @@ include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 include( FindPkgConfig )
 
 # check if systemd (for logging) is available, if yes: use it
-pkg_search_module( SYSTEMD_JOURNAL REQUIRED libsystemd-journal )
+pkg_search_module( SYSTEMD_JOURNAL QUIET libsystemd-journal )
 if( SYSTEMD_JOURNAL_FOUND )
 	include_directories( SYSTEM ${SYSTEMD_JOURNAL_INCLUDE_DIRS} )
 endif()
