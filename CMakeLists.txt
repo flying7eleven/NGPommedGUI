@@ -44,11 +44,14 @@ add_executable( ngpommedgui ${NGPOMMEDGUI_SOURCE_FILES} ${NGPOMMEDGUI_HEADER_FIL
 target_link_libraries( ngpommedgui ${Boost_LIBRARIES} ${SYSTEMD_JOURNAL_LIBRARIES} )
 install( TARGETS ngpommedgui RUNTIME DESTINATION bin )
 
-# enable the CTest module
-enable_testing()
-
-# list some required tests
-add_test( NAME pidFileCreation WORKING_DIRECTORY ${CMAKE_BINARY_DIR} COMMAND ../scripts/testPidFileCreation.sh ${NGPOMMEDGUI_PID_FILE} )
+# just deal with the test code if the user selected to build them
+if( BUILD_TESTS )
+	# enable the CTest module
+	enable_testing()
+	
+	# list some required tests
+	add_test( NAME pidFileCreation WORKING_DIRECTORY ${CMAKE_BINARY_DIR} COMMAND ../scripts/testPidFileCreation.sh ${NGPOMMEDGUI_PID_FILE} )
+endif()
 
 # some final messages
 message( "-- The daemons PID file will be written to ${NGPOMMEDGUI_PID_FILE}" )
