@@ -83,10 +83,6 @@ int main( int argc, char **argv ) {
 	// from now on we are a daemon process
 	syslog( LOG_DEBUG | LOG_DAEMON, "Next Generation pommed GUI daemon started" );
 
-	while( true ) {
-		sleep( 1 );
-	}
-
 	// everything went okay
 	return EXIT_SUCCESS;
 }
