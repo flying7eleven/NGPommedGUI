@@ -26,28 +26,7 @@ void daemonSignalHandler( int sig ) {
 	}
 }
 
-bool isRunning() {
-	// try to open the lock file (pidfile),
-	int lockFileFileHandle = open( NGPOMMEDGUI_PID_FILE, O_RDWR | O_CREAT | O_TRUNC, 0640 );
-
-	if( lockFileFileHandle < 0 ) {
-		sd_journal_print( LOG_ERR, boost::str( boost::format( "Failed to open %1%. Please delete the file and try again." ) % NGPOMMEDGUI_PID_FILE ).c_str() );
-		return true;
-	}
-
-	// if we cannot lock the file, it seems that we are already running
-	if( lockf( lockFileFileHandle, F_TLOCK, 0 ) < 0 ) {
-		return true;
-	}
-
-	// if we could lock the file, we can write our pid into the file and then tell the caller that we were not running before
-	const std::string pidStr = boost::str( boost::format( "%1%" ) % getpid() );
-	sd_journal_print( LOG_DEBUG, pidStr.c_str() );
-	write( lockFileFileHandle, pidStr.c_str(), pidStr.length() );
-	return false;
-}
-
-int main( int argc, char **argv ) {
+void daemonize() {
 	// fork the process
 	pid_t forkSuccess = fork();
 
@@ -82,11 +61,28 @@ int main( int argc, char **argv ) {
 	signal( SIGTTOU, SIG_IGN ); // ignore tty OUT signal
 	signal( SIGTTIN, SIG_IGN ); // ignore tty IN signal
 
-	// be sure that we just start the daemon if it is not running already
-	if( isRunning() ) {
-		sd_journal_print( LOG_ERR, boost::str( boost::format( "Terminating. It seems that the daemon is already running. If not, delete %1% and try it again." ) % NGPOMMEDGUI_PID_FILE ).c_str() );
+	// try to open the lock file (pidfile),
+	int lockFileFileHandle = open( NGPOMMEDGUI_PID_FILE, O_RDWR | O_CREAT | O_TRUNC, 0640 );
+	if( lockFileFileHandle < 0 ) {
+		sd_journal_print( LOG_ERR, boost::str( boost::format( "Failed to open %1%. Please delete the file and try again." ) % NGPOMMEDGUI_PID_FILE ).c_str() );
 		_exit( EXIT_FAILURE + 1 );
 	}
+
+	// if we cannot lock the file, it seems that we are already running
+	if( lockf( lockFileFileHandle, F_TLOCK, 0 ) < 0 ) {
+		sd_journal_print( LOG_ERR, boost::str( boost::format( "Terminating. It seems that the daemon is already running. If not, delete %1% and try it again." ) % NGPOMMEDGUI_PID_FILE ).c_str() );
+		_exit( EXIT_FAILURE + 2 );
+	}
+
+	// if we could lock the file, we can write our pid into the file and then tell the caller that we were not running before
+	const std::string pidStr = boost::str( boost::format( "%1%" ) % getpid() );
+	sd_journal_print( LOG_DEBUG, pidStr.c_str() );
+	write( lockFileFileHandle, pidStr.c_str(), pidStr.length() );
+}
+
+int main( int argc, char **argv ) {
+	// be sure that the following code is ran as a daemon
+	daemonize();
 
 	// from now on we are a daemon process
 	sd_journal_print( LOG_DEBUG, "Next Generation pommed GUI daemon started" );
