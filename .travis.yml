@@ -12,6 +12,7 @@ install:
   - sudo apt-get install libboost1.55-dev libboost-system1.55-dev libboost-program-options1.55-dev
 
 script:
+  - pwd
   - mkdir build
   - cd build
   - cmake -DCMAKE_INSTALL_PREFIX=../.install -DCMAKE_BUILD_TYPE=Debug $OPTIONS ..
