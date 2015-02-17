@@ -88,7 +88,6 @@ void daemonize() {
 
 	// if we could lock the file, we can write our pid into the file and then tell the caller that we were not running before
 	const std::string pidStr = boost::str( boost::format( "%1%" ) % getpid() );
-	sd_journal_print( LOG_DEBUG, pidStr.c_str() );
 	write( lockFileFileHandle, pidStr.c_str(), pidStr.length() );
 }
 
