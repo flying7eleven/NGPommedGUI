@@ -29,14 +29,6 @@
 #include <boost/format.hpp>
 #include "ngpommedgui.hxx"
 
-// decide which logging system should be used
-#if defined( SYSTEMD_JOURNAL_FOUND )
-	#undef SD_JOURNAL_SUPPRESS_LOCATION // be sure that the code location is written to the log
-	#include <systemd/sd-journal.h>
-#else
-	#define sd_journal_print( priority, ... ) syslog( priority, __VA_ARGS__ );
-#endif
-
 void daemonSignalHandler( int sig ) {
 	switch( sig ) {
 		case SIGTERM:
